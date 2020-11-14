@@ -27,19 +27,19 @@ export default {
   async create(request: Request, response: Response){
     const { 
       name,
-      status
+      isComplete
     } = request.body;
 
     const tasksRepository = getRepository(Task);
 
     const data = {
       name,
-      status: status === 'true'
+      isComplete
     };
 
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      status: Yup.boolean()
+      name: Yup.string(),
+      isComplete: Yup.boolean()
     });
 
     await schema.validate(data, {
@@ -53,5 +53,50 @@ export default {
     await tasksRepository.save(task);
 
     return response.status(201).json(task);
+  },
+
+  async update(request: Request, response: Response){
+    const { id } = request.params;
+
+    const { 
+      name,
+      isComplete
+    } = request.body;
+
+    const tasksRepository = getRepository(Task);
+
+    const data = {
+      name,
+      isComplete
+    };
+
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      isComplete: Yup.boolean().required()
+    });
+
+    await schema.validate(data, {
+      abortEarly: false,
+    });
+
+    // Update the task in database
+    const task = await tasksRepository.save({
+      id: Number(id),
+      name: data.name,
+      isComplete: data.isComplete
+    });
+
+    return response.status(201).json(taskView.render(task));
+  },
+
+  async delete(request: Request, response: Response){
+    const { id } = request.params;
+
+    const tasksRepository = getRepository(Task);
+    
+    // Delete the task in the database
+    await tasksRepository.delete(id);
+
+    return response.status(200).json({ message: "Task successfully deleted" });
   }
 };
