@@ -5,7 +5,7 @@ export default {
     return {
       id: task.id,
       name: task.name,
-      status: task.status
+      isComplete: task.isComplete
     }
   },
 

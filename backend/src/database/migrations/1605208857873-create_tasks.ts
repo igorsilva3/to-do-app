@@ -19,7 +19,7 @@ export class createTasks1605208857873 implements MigrationInterface {
           type: 'varchar'
         },
         {
-          name: 'status',
+          name: 'isComplete',
           type: 'boolean',
           default: false
         }
